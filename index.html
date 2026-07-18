@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Python and the World — Learn Python. Build anything. Everywhere.</title>
+  <meta name="description" content="Python and the World is a community-driven platform for learning Python and applying it across AI, data science, the web, automation, science, and education." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Progressive enhancement: only hide-for-reveal when JS is available -->
+  <script>document.documentElement.classList.add('js');</script>
+
+  <style>
+    /* ============ Tokens ============ */
+    :root {
+      --bg: #0B1120;
+      --surface: #111A2E;
+      --surface-2: #16223B;
+      --border: #24324D;
+      --fg: #E8EEF7;
+      --muted: #93A4C0;
+      --primary: #4B8BBE;
+      --primary-bright: #6BA9DE;
+      --accent: #FFD43B;
+      --on-accent: #0B1120;
+      --success: #3FB950;
+      --destructive: #EF4444;
+
+      --font-display: 'Space Grotesk', system-ui, sans-serif;
+      --font-body: 'IBM Plex Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --space-1: 8px;  --space-2: 16px; --space-3: 24px;
+      --space-4: 32px; --space-5: 48px; --space-6: 64px; --space-7: 96px;
+
+      --radius: 14px;
+      --radius-lg: 22px;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-lg: 0 24px 60px rgba(2,8,23,.6);
+      --ring: 0 0 0 3px rgba(107,169,222,.55);
+      --maxw: 1200px;
+      --ease: cubic-bezier(.22,.61,.36,1);
+    }
+
+    /* ============ Reset / base ============ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; line-height: 1.12; letter-spacing: -.02em; margin: 0; }
+    p { margin: 0; }
+    a { color: var(--primary-bright); text-decoration: none; }
+    a:hover { color: #9CC6EC; }
+    img, svg { display: block; max-width: 100%; }
+    ul { margin: 0; padding: 0; list-style: none; }
+
+    :focus-visible { outline: none; box-shadow: var(--ring); border-radius: 8px; }
+
+    .container { width: 100%; max-width: var(--maxw); margin: 0 auto; padding: 0 var(--space-3); }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: .8rem; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--primary-bright); margin-bottom: var(--space-2);
+    }
+    .section { padding: var(--space-7) 0; }
+    .section-head { max-width: 640px; margin: 0 auto var(--space-5); text-align: center; }
+    .section-head h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+    .section-head p { color: var(--muted); margin-top: var(--space-2); font-size: 1.05rem; }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute; left: 12px; top: -60px; z-index: 100;
+      background: var(--accent); color: var(--on-accent); padding: 10px 16px;
+      border-radius: 10px; font-weight: 600; transition: top .2s var(--ease);
+    }
+    .skip-link:focus { top: 12px; color: var(--on-accent); }
+
+    /* ============ Buttons ============ */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      min-height: 48px; padding: 0 22px; border-radius: 12px;
+      font-family: var(--font-body); font-weight: 600; font-size: 1rem;
+      cursor: pointer; border: 1px solid transparent;
+      transition: transform .18s var(--ease), background .18s var(--ease), box-shadow .18s var(--ease), border-color .18s var(--ease);
+      white-space: nowrap;
+    }
+    .btn-primary { background: var(--accent); color: var(--on-accent); box-shadow: 0 8px 24px rgba(255,212,59,.18); }
+    .btn-primary:hover { color: var(--on-accent); transform: translateY(-2px); box-shadow: 0 14px 34px rgba(255,212,59,.28); }
+    .btn-secondary { background: transparent; color: var(--fg); border-color: var(--border); }
+    .btn-secondary:hover { color: var(--fg); border-color: var(--primary); background: rgba(75,139,190,.10); transform: translateY(-2px); }
+
+    /* ============ Header ============ */
+    header {
+      position: sticky; top: 0; z-index: 50;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(11,17,32,.72); border-bottom: 1px solid transparent;
+      transition: border-color .3s var(--ease), background .3s var(--ease);
+    }
+    header.scrolled { border-bottom-color: var(--border); background: rgba(11,17,32,.9); }
+    .nav { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .brand { display: flex; align-items: center; gap: 12px; font-family: var(--font-display); font-weight: 700; font-size: 1.12rem; color: var(--fg); }
+    .brand .logo { width: 38px; height: 38px; flex: none; }
+    .nav-links { display: flex; align-items: center; gap: var(--space-4); }
+    .nav-links a.navlink { color: var(--muted); font-weight: 500; font-size: .95rem; }
+    .nav-links a.navlink:hover { color: var(--fg); }
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
+    .menu-toggle { display: none; background: transparent; border: 1px solid var(--border); border-radius: 10px; width: 44px; height: 44px; cursor: pointer; color: var(--fg); }
+
+    /* ============ Hero ============ */
+    .hero { position: relative; padding: clamp(64px, 10vw, 120px) 0 var(--space-7); overflow: hidden; }
+    .aurora { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+    .aurora span { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .5; animation: drift 16s var(--ease) infinite alternate; }
+    .aurora .a1 { width: 460px; height: 460px; background: #2b5f8f; top: -120px; left: -80px; }
+    .aurora .a2 { width: 380px; height: 380px; background: #b9922a; top: 40px; right: -60px; animation-delay: -4s; opacity: .32; }
+    .aurora .a3 { width: 340px; height: 340px; background: #3b6fa0; bottom: -140px; left: 40%; animation-delay: -8s; }
+    @keyframes drift { to { transform: translate3d(30px, 40px, 0) scale(1.12); } }
+
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.05fr .95fr; gap: var(--space-6); align-items: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--muted);
+      font-family: var(--font-mono); font-size: .78rem; margin-bottom: var(--space-3);
+    }
+    .hero-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); box-shadow: 0 0 0 3px rgba(63,185,80,.2); }
+    .hero h1 { font-size: clamp(2.4rem, 5.2vw, 4rem); }
+    .hero h1 .grad { background: linear-gradient(100deg, var(--primary-bright), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .hero p.lead { color: var(--muted); font-size: clamp(1.05rem, 2vw, 1.25rem); margin-top: var(--space-3); max-width: 40ch; }
+    .hero-cta { display: flex; flex-wrap: wrap; gap: 14px; margin-top: var(--space-4); }
+    .hero-meta { display: flex; gap: var(--space-4); margin-top: var(--space-5); flex-wrap: wrap; }
+    .hero-meta div { }
+    .hero-meta strong { font-family: var(--font-display); font-size: 1.5rem; display: block; }
+    .hero-meta span { color: var(--muted); font-size: .85rem; }
+
+    /* Code window */
+    .code-window { background: var(--surface-2); border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); overflow: hidden; }
+    .code-bar { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid var(--border); background: rgba(255,255,255,.02); }
+    .code-bar .dots { display: flex; gap: 7px; }
+    .code-bar .dots i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+    .code-bar .dots i:nth-child(1){ background:#ff5f57;} .code-bar .dots i:nth-child(2){ background:#febc2e;} .code-bar .dots i:nth-child(3){ background:#28c840;}
+    .code-bar .file { font-family: var(--font-mono); font-size: .78rem; color: var(--muted); margin-left: 6px; }
+    .code-body { padding: 20px; font-family: var(--font-mono); font-size: .88rem; line-height: 1.75; overflow-x: auto; }
+    .code-body .ln { color: #4b5a76; user-select: none; margin-right: 16px; }
+    .tok-kw { color: #ff9d5c; } .tok-fn { color: var(--primary-bright); } .tok-str { color: #9ae6b4; } .tok-com { color: #5c6b86; font-style: italic; } .tok-num { color: #f6c177; } .tok-out { color: var(--success); }
+    .code-out { border-top: 1px solid var(--border); padding: 12px 20px; font-family: var(--font-mono); font-size: .82rem; color: var(--muted); display: flex; align-items: center; gap: 10px; background: rgba(63,185,80,.05); }
+
+    /* ============ Marquee / trust ============ */
+    .trust { border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: var(--space-4) 0; background: rgba(255,255,255,.015); }
+    .trust p { text-align: center; color: var(--muted); font-family: var(--font-mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; margin-bottom: var(--space-3); }
+    .trust-row { display: flex; flex-wrap: wrap; gap: var(--space-5); justify-content: center; align-items: center; opacity: .85; }
+    .trust-row span { font-family: var(--font-display); font-weight: 600; color: var(--muted); font-size: 1.05rem; }
+
+    /* ============ Cards grid ============ */
+    .grid { display: grid; gap: var(--space-3); }
+    .grid-3 { grid-template-columns: repeat(3, 1fr); }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: var(--space-4); transition: transform .22s var(--ease), border-color .22s var(--ease), box-shadow .22s var(--ease);
+      position: relative; overflow: hidden;
+    }
+    .card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow); }
+    .card .ic {
+      width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center;
+      background: rgba(75,139,190,.14); color: var(--primary-bright); margin-bottom: var(--space-3);
+      border: 1px solid rgba(75,139,190,.25);
+    }
+    .card h3 { font-size: 1.2rem; margin-bottom: 8px; }
+    .card p { color: var(--muted); font-size: .96rem; }
+    .card .tag { display: inline-block; margin-top: var(--space-2); font-family: var(--font-mono); font-size: .72rem; color: var(--primary-bright); }
+
+    /* ============ Stats ============ */
+    .stats { background: linear-gradient(180deg, transparent, rgba(75,139,190,.05)); }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); }
+    .stat { text-align: center; padding: var(--space-4) var(--space-2); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .stat .num { font-family: var(--font-display); font-weight: 700; font-size: clamp(2rem, 4vw, 2.8rem); color: var(--fg); background: linear-gradient(120deg, var(--primary-bright), var(--accent)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat .lbl { color: var(--muted); font-size: .9rem; margin-top: 6px; }
+
+    /* ============ Features (why python) ============ */
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); align-items: center; }
+    .feature-list li { display: flex; gap: 14px; padding: var(--space-2) 0; }
+    .feature-list .fic { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(63,185,80,.12); color: var(--success); border: 1px solid rgba(63,185,80,.25); }
+    .feature-list h4 { font-family: var(--font-display); font-size: 1.05rem; margin-bottom: 2px; }
+    .feature-list p { color: var(--muted); font-size: .95rem; }
+
+    /* Path steps */
+    .steps { display: grid; gap: 14px; }
+    .step { display: flex; gap: 16px; align-items: flex-start; padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); }
+    .step .n { flex: none; width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; font-family: var(--font-mono); font-weight: 600; background: var(--accent); color: var(--on-accent); }
+    .step h4 { font-size: 1.02rem; margin-bottom: 2px; }
+    .step p { color: var(--muted); font-size: .92rem; }
+
+    /* ============ Testimonials ============ */
+    .quotes { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-3); }
+    .quote { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: var(--space-4); }
+    .quote p { font-size: 1rem; }
+    .quote .who { display: flex; align-items: center; gap: 12px; margin-top: var(--space-3); }
+    .quote .av { width: 42px; height: 42px; border-radius: 50%; flex: none; display: grid; place-items: center; font-family: var(--font-display); font-weight: 700; color: var(--on-accent); }
+    .quote .who b { display: block; font-size: .92rem; }
+    .quote .who span { color: var(--muted); font-size: .8rem; }
+    .stars { color: var(--accent); display: flex; gap: 3px; margin-bottom: var(--space-2); }
+
+    /* ============ CTA ============ */
+    .cta-band { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(40px, 6vw, 72px); text-align: center; background: radial-gradient(120% 140% at 50% 0%, rgba(75,139,190,.22), transparent 60%), var(--surface); }
+    .cta-band h2 { font-size: clamp(1.9rem, 4vw, 2.8rem); }
+    .cta-band p { color: var(--muted); margin: var(--space-2) auto var(--space-4); max-width: 46ch; font-size: 1.08rem; }
+    .cta-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+
+    /* ============ Footer ============ */
+    footer { border-top: 1px solid var(--border); padding: var(--space-6) 0 var(--space-4); margin-top: var(--space-7); }
+    .foot-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: var(--space-4); }
+    .foot-grid h5 { font-family: var(--font-display); font-size: .95rem; margin-bottom: var(--space-2); color: var(--fg); }
+    .foot-grid a { display: block; color: var(--muted); font-size: .92rem; padding: 5px 0; }
+    .foot-grid a:hover { color: var(--fg); }
+    .foot-brand p { color: var(--muted); font-size: .92rem; margin-top: var(--space-2); max-width: 34ch; }
+    .foot-bottom { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-5); padding-top: var(--space-3); border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; }
+    .socials { display: flex; gap: 10px; }
+    .socials a { width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border); display: grid; place-items: center; color: var(--muted); }
+    .socials a:hover { color: var(--fg); border-color: var(--primary); }
+
+    /* ============ Reveal animation ============ */
+    .js .reveal { opacity: 0; transform: translateY(24px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+    .js .reveal.in { opacity: 1; transform: none; }
+
+    /* ============ Responsive ============ */
+    @media (max-width: 960px) {
+      .hero-grid, .why-grid { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+      .grid-3 { grid-template-columns: 1fr 1fr; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .quotes { grid-template-columns: 1fr; }
+      .foot-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 720px) {
+      .nav-links { display: none; }
+      .menu-toggle { display: grid; place-items: center; }
+      .nav-links.open {
+        display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2);
+        position: absolute; top: 72px; left: 0; right: 0; padding: var(--space-3);
+        background: rgba(11,17,32,.98); border-bottom: 1px solid var(--border);
+      }
+      .nav-links.open .nav-actions { flex-direction: column; align-items: stretch; width: 100%; }
+      .nav-links.open .btn { width: 100%; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .section { padding: var(--space-6) 0; }
+    }
+    @media (max-width: 400px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; scroll-behavior: auto !important; }
+      .reveal { opacity: 1; transform: none; transition: none; }
+      .btn:hover, .card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ Header ============ -->
+  <header id="site-header">
+    <div class="container nav">
+      <a class="brand" href="#" aria-label="Python and the World home">
+        <svg class="logo" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+          <rect width="48" height="48" rx="12" fill="#111A2E" stroke="#24324D"/>
+          <path d="M23.6 11c-5 0-4.7 2.2-4.7 2.2l.01 2.3h4.8v.7h-6.7s-3.2-.4-3.2 4.7c0 5 2.8 4.9 2.8 4.9h1.7v-2.4s-.1-2.8 2.8-2.8h4.8s2.6.04 2.6-2.6v-4.3S25.9 11 23.6 11Zm-2.6 1.5a.86.86 0 1 1 0 1.7.86.86 0 0 1 0-1.7Z" fill="#4B8BBE"/>
+          <path d="M24.4 37c5 0 4.7-2.2 4.7-2.2l-.01-2.3h-4.8v-.7h6.7s3.2.4 3.2-4.7c0-5-2.8-4.9-2.8-4.9h-1.7v2.4s.1 2.8-2.8 2.8h-4.8s-2.6-.04-2.6 2.6v4.3S22.1 37 24.4 37Zm2.6-1.5a.86.86 0 1 1 0-1.7.86.86 0 0 1 0 1.7Z" fill="#FFD43B"/>
+        </svg>
+        Python <span style="color:var(--muted);font-weight:500">& the World</span>
+      </a>
+
+      <nav class="nav-links" id="nav-links" aria-label="Primary">
+        <a class="navlink" href="#domains">Domains</a>
+        <a class="navlink" href="#why">Why Python</a>
+        <a class="navlink" href="#path">Learn</a>
+        <a class="navlink" href="#voices">Community</a>
+        <div class="nav-actions">
+          <a class="navlink" href="#">Sign in</a>
+          <a class="btn btn-primary" href="#join">Start free</a>
+        </div>
+      </nav>
+
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-links">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+    <!-- ============ Hero ============ -->
+    <section class="hero">
+      <div class="aurora" aria-hidden="true"><span class="a1"></span><span class="a2"></span><span class="a3"></span></div>
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="hero-badge"><span class="dot"></span> Open-source · community-run · worldwide</span>
+          <h1>Learn Python.<br/>Build <span class="grad">anything</span>.<br/>Everywhere.</h1>
+          <p class="lead">Python and the World is where curious minds go from their first <code style="font-family:var(--font-mono);color:var(--primary-bright)">print()</code> to shipping AI, data, and web projects that reach real people.</p>
+          <div class="hero-cta">
+            <a class="btn btn-primary" href="#join">
+              Start learning free
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-secondary" href="#domains">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+              Explore domains
+            </a>
+          </div>
+          <div class="hero-meta">
+            <div><strong>120k+</strong><span>learners</span></div>
+            <div><strong>150+</strong><span>countries</span></div>
+            <div><strong>800+</strong><span>projects shipped</span></div>
+          </div>
+        </div>
+
+        <div class="hero-visual">
+          <div class="code-window" role="img" aria-label="Example Python program that greets the world and prints a result">
+            <div class="code-bar">
+              <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+              <span class="file">hello_world.py</span>
+            </div>
+            <pre class="code-body"><code><span class="ln">1</span><span class="tok-com"># Python reaches every corner of the world</span>
+<span class="ln">2</span><span class="tok-kw">from</span> world <span class="tok-kw">import</span> <span class="tok-fn">people</span>
+<span class="ln">3</span>
+<span class="ln">4</span><span class="tok-kw">def</span> <span class="tok-fn">greet</span>(name):
+<span class="ln">5</span>    <span class="tok-kw">return</span> <span class="tok-str">f"Hello, {name}! Let's build."</span>
+<span class="ln">6</span>
+<span class="ln">7</span><span class="tok-kw">for</span> person <span class="tok-kw">in</span> <span class="tok-fn">people</span>(reach=<span class="tok-num">7_000_000_000</span>):
+<span class="ln">8</span>    <span class="tok-fn">print</span>(greet(person.name))</code></pre>
+            <div class="code-out"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--success)" stroke-width="2.5" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="tok-out">Ran successfully — the world said hello back.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Trust ============ -->
+    <section class="trust">
+      <div class="container">
+        <p>Powering learners &amp; teams at</p>
+        <div class="trust-row">
+          <span>NovaLabs</span><span>DataForge</span><span>OpenScience</span><span>Meridian AI</span><span>Bytewise</span><span>Helio Cloud</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Domains ============ -->
+    <section class="section" id="domains">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">One language · endless worlds</div>
+          <h2>Python is everywhere. So is your potential.</h2>
+          <p>Pick a path and follow curated tracks, real projects, and mentors from the community.</p>
+        </div>
+
+        <div class="grid grid-3">
+          <!-- AI/ML -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v1a3 3 0 0 0-3 3 3 3 0 0 0 0 6 3 3 0 0 0 3 3v1a3 3 0 0 0 6 0v-1a3 3 0 0 0 3-3 3 3 0 0 0 0-6 3 3 0 0 0-3-3V5a3 3 0 0 0-3-3Z"/><path d="M12 8v8M8 12h8"/></svg></div>
+            <h3>AI &amp; Machine Learning</h3>
+            <p>Train models, fine-tune LLMs, and deploy with PyTorch, scikit-learn, and Hugging Face.</p>
+            <span class="tag">torch · transformers · numpy</span>
+          </article>
+          <!-- Data -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg></div>
+            <h3>Data Science</h3>
+            <p>Turn messy data into insight with pandas, Polars, and beautiful notebooks.</p>
+            <span class="tag">pandas · matplotlib · jupyter</span>
+          </article>
+          <!-- Web -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.5 3.8 5.8 3.8 9S14.5 18.5 12 21c-2.5-2.5-3.8-5.8-3.8-9S9.5 5.5 12 3Z"/></svg></div>
+            <h3>Web Development</h3>
+            <p>Ship APIs and full-stack apps with FastAPI, Django, and Flask.</p>
+            <span class="tag">fastapi · django · flask</span>
+          </article>
+          <!-- Automation -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg></div>
+            <h3>Automation &amp; Scripting</h3>
+            <p>Automate the boring stuff — files, browsers, spreadsheets, and pipelines.</p>
+            <span class="tag">requests · playwright · schedule</span>
+          </article>
+          <!-- Science -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M9 2h6M10 2v6.5L5.2 18a2 2 0 0 0 1.8 3h10a2 2 0 0 0 1.8-3L14 8.5V2"/><path d="M7.5 15h9"/></svg></div>
+            <h3>Scientific Computing</h3>
+            <p>Model the universe with NumPy, SciPy, and simulation frameworks.</p>
+            <span class="tag">scipy · sympy · astropy</span>
+          </article>
+          <!-- Education -->
+          <article class="card reveal">
+            <div class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 3 6 3s6-2 6-3v-5"/></svg></div>
+            <h3>Teaching &amp; Education</h3>
+            <p>Learn to teach — build courses, exercises, and reach students worldwide.</p>
+            <span class="tag">edu · mentoring · community</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Stats ============ -->
+    <section class="section stats">
+      <div class="container">
+        <div class="stats-grid">
+          <div class="stat reveal"><div class="num" data-count="120000" data-suffix="k+">0</div><div class="lbl">Active learners</div></div>
+          <div class="stat reveal"><div class="num" data-count="150" data-suffix="+">0</div><div class="lbl">Countries reached</div></div>
+          <div class="stat reveal"><div class="num" data-count="1200" data-suffix="+">0</div><div class="lbl">Lessons &amp; projects</div></div>
+          <div class="stat reveal"><div class="num" data-count="98" data-suffix="%">0</div><div class="lbl">Would recommend</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Why Python ============ -->
+    <section class="section" id="why">
+      <div class="container why-grid">
+        <div class="reveal">
+          <div class="eyebrow">Why learners stay</div>
+          <h2 style="font-size:clamp(1.8rem,4vw,2.6rem)">A path built for real momentum</h2>
+          <p style="color:var(--muted);margin-top:var(--space-2);font-size:1.05rem">No tutorial hell. Every concept is paired with a project you can show the world — and a community that reviews your code.</p>
+          <ul class="feature-list" style="margin-top:var(--space-4)">
+            <li>
+              <span class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><h4>Project-first curriculum</h4><p>Build a portfolio while you learn, not after.</p></div>
+            </li>
+            <li>
+              <span class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><h4>Human code reviews</h4><p>Mentors and peers give feedback on your actual work.</p></div>
+            </li>
+            <li>
+              <span class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><h4>Runs in your browser</h4><p>Interactive Python with instant output — zero setup.</p></div>
+            </li>
+            <li>
+              <span class="fic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+              <div><h4>Free &amp; open forever</h4><p>Core tracks are free. Give back when you're ready.</p></div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="steps reveal" id="path" aria-label="Learning path">
+          <div class="step"><span class="n">1</span><div><h4>Start with the fundamentals</h4><p>Variables, loops, functions — with bite-sized wins from day one.</p></div></div>
+          <div class="step"><span class="n">2</span><div><h4>Pick your world</h4><p>Choose an AI, data, web, or automation track that excites you.</p></div></div>
+          <div class="step"><span class="n">3</span><div><h4>Build in public</h4><p>Ship real projects and get reviews from the community.</p></div></div>
+          <div class="step"><span class="n">4</span><div><h4>Reach the world</h4><p>Deploy, share, mentor others, and grow your impact.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Testimonials ============ -->
+    <section class="section" id="voices">
+      <div class="container">
+        <div class="section-head reveal">
+          <div class="eyebrow">Voices from the community</div>
+          <h2>Learners on six continents, one language</h2>
+        </div>
+        <div class="quotes">
+          <figure class="quote reveal">
+            <div class="stars" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+            </div>
+            <p>"I went from copy-pasting Stack Overflow to shipping my own weather API in eight weeks. The code reviews changed everything."</p>
+            <figcaption class="who"><span class="av" style="background:#4B8BBE">AO</span><span><b>Amara Okafor</b><span>Backend dev · Lagos, Nigeria</span></span></figcaption>
+          </figure>
+
+          <figure class="quote reveal">
+            <div class="stars" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+            </div>
+            <p>"As a teacher, I use the tracks with my students. Python and the World made data science approachable for a whole classroom."</p>
+            <figcaption class="who"><span class="av" style="background:#FFD43B">LM</span><span><b>Lucas Martins</b><span>Educator · São Paulo, Brazil</span></span></figcaption>
+          </figure>
+
+          <figure class="quote reveal">
+            <div class="stars" aria-label="5 out of 5 stars">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.7 5.9 20.4l1.4-6.8L2.2 9l6.9-.7L12 2z"/></svg>
+            </div>
+            <p>"The AI track got me my first ML internship. Real projects on my GitHub beat any certificate I could have bought."</p>
+            <figcaption class="who"><span class="av" style="background:#3FB950">PS</span><span><b>Priya Sharma</b><span>ML intern · Bengaluru, India</span></span></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Final CTA ============ -->
+    <section class="section" id="join">
+      <div class="container">
+        <div class="cta-band reveal">
+          <div class="eyebrow" style="justify-content:center">Ready when you are</div>
+          <h2>Your first line of Python is one click away</h2>
+          <p>Join 120,000+ learners building the future — from first steps to production. Free to start, no card required.</p>
+          <div class="cta-actions">
+            <a class="btn btn-primary" href="#">
+              Create your free account
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+            <a class="btn btn-secondary" href="#domains">Browse the tracks</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============ Footer ============ -->
+  <footer>
+    <div class="container">
+      <div class="foot-grid">
+        <div class="foot-brand">
+          <a class="brand" href="#" aria-label="Python and the World home">
+            <svg class="logo" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <rect width="48" height="48" rx="12" fill="#111A2E" stroke="#24324D"/>
+              <path d="M23.6 11c-5 0-4.7 2.2-4.7 2.2l.01 2.3h4.8v.7h-6.7s-3.2-.4-3.2 4.7c0 5 2.8 4.9 2.8 4.9h1.7v-2.4s-.1-2.8 2.8-2.8h4.8s2.6.04 2.6-2.6v-4.3S25.9 11 23.6 11Zm-2.6 1.5a.86.86 0 1 1 0 1.7.86.86 0 0 1 0-1.7Z" fill="#4B8BBE"/>
+              <path d="M24.4 37c5 0 4.7-2.2 4.7-2.2l-.01-2.3h-4.8v-.7h6.7s3.2.4 3.2-4.7c0-5-2.8-4.9-2.8-4.9h-1.7v2.4s.1 2.8-2.8 2.8h-4.8s-2.6-.04-2.6 2.6v4.3S22.1 37 24.4 37Zm2.6-1.5a.86.86 0 1 1 0-1.7.86.86 0 0 1 0 1.7Z" fill="#FFD43B"/>
+            </svg>
+            Python <span style="color:var(--muted);font-weight:500">& the World</span>
+          </a>
+          <p>An open, community-run home for learning Python and using it to make an impact — wherever you are.</p>
+        </div>
+        <div>
+          <h5>Learn</h5>
+          <a href="#domains">Domains</a><a href="#path">Learning path</a><a href="#why">Why Python</a><a href="#">Projects</a>
+        </div>
+        <div>
+          <h5>Community</h5>
+          <a href="#voices">Stories</a><a href="#">Forum</a><a href="#">Mentorship</a><a href="#">Events</a>
+        </div>
+        <div>
+          <h5>About</h5>
+          <a href="#">Our mission</a><a href="#">Contribute</a><a href="#">Code of conduct</a><a href="#">Contact</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <span>© 2026 Python and the World. Made with community, worldwide.</span>
+        <div class="socials">
+          <a href="#" aria-label="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 6.6 2 12.3c0 4.5 2.9 8.3 6.8 9.7.5.1.7-.2.7-.5v-1.7c-2.8.6-3.4-1.4-3.4-1.4-.5-1.2-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.3-4.5-1.2-4.5-5.1 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.7 1a9 9 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.9-2.3 4.8-4.5 5.1.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10.3 10.3 0 0 0 22 12.3C22 6.6 17.5 2 12 2Z"/></svg></a>
+          <a href="#" aria-label="Discord"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M19.5 5.6A17 17 0 0 0 15.4 4l-.2.4a15 15 0 0 1 3.6 1.7 12 12 0 0 0-10-.4c-.5.2-.9.4-1.3.6A15.6 15.6 0 0 1 8.8 4.4L8.6 4a17 17 0 0 0-4.1 1.6C2 9.3 1.3 12.9 1.6 16.5a17 17 0 0 0 5.1 2.6l.6-1c-.7-.2-1.4-.6-2-1l.5-.3a12 12 0 0 0 10.4 0l.5.3c-.6.4-1.3.7-2 1l.6 1a17 17 0 0 0 5.1-2.6c.4-4.2-.7-7.8-2.9-10.9ZM8.5 14.4c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Zm7 0c-1 0-1.8-.9-1.8-2s.8-2 1.8-2 1.8.9 1.8 2-.8 2-1.8 2Z"/></svg></a>
+          <a href="#" aria-label="X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.2 2h3.3l-7.2 8.3L23 22h-6.6l-5.2-6.8L5.2 22H1.9l7.7-8.8L1 2h6.8l4.7 6.2L18.2 2Zm-1.2 18h1.8L7.1 3.9H5.2L17 20Z"/></svg></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Sticky header border on scroll
+      var header = document.getElementById('site-header');
+      var onScroll = function () {
+        if (window.scrollY > 8) header.classList.add('scrolled');
+        else header.classList.remove('scrolled');
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+
+      // Mobile menu
+      var toggle = document.getElementById('menu-toggle');
+      var links = document.getElementById('nav-links');
+      toggle.addEventListener('click', function () {
+        var open = links.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+      links.addEventListener('click', function (e) {
+        if (e.target.closest('a')) { links.classList.remove('open'); toggle.setAttribute('aria-expanded', 'false'); }
+      });
+
+      // Scroll reveal
+      var reveals = document.querySelectorAll('.reveal');
+      if (reduce || !('IntersectionObserver' in window)) {
+        reveals.forEach(function (el) { el.classList.add('in'); });
+      } else {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry, i) {
+            if (entry.isIntersecting) {
+              var el = entry.target;
+              setTimeout(function () { el.classList.add('in'); }, (el.dataset.delay ? +el.dataset.delay : (i % 3) * 90));
+              io.unobserve(el);
+            }
+          });
+        }, { threshold: 0.14, rootMargin: '0px 0px -8% 0px' });
+        reveals.forEach(function (el) { io.observe(el); });
+      }
+
+      // Animated stat counters
+      var nums = document.querySelectorAll('.num[data-count]');
+      var fmt = function (n, suffix) {
+        if (suffix === 'k+') return Math.round(n / 1000) + 'k+';
+        return n.toLocaleString() + (suffix || '');
+      };
+      var runCount = function (el) {
+        var target = +el.dataset.count, suffix = el.dataset.suffix || '';
+        if (reduce) { el.textContent = fmt(target, suffix); return; }
+        var start = null, dur = 1400;
+        var tick = function (ts) {
+          if (!start) start = ts;
+          var p = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - p, 3);
+          el.textContent = fmt(Math.round(target * eased), suffix);
+          if (p < 1) requestAnimationFrame(tick);
+          else el.textContent = fmt(target, suffix);
+        };
+        requestAnimationFrame(tick);
+      };
+      if ('IntersectionObserver' in window) {
+        var co = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) { runCount(entry.target); co.unobserve(entry.target); }
+          });
+        }, { threshold: 0.5 });
+        nums.forEach(function (el) { co.observe(el); });
+      } else {
+        nums.forEach(function (el) { el.textContent = fmt(+el.dataset.count, el.dataset.suffix || ''); });
+      }
+    })();
+  </script>
+</body>
+</html>
