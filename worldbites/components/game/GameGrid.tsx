@@ -1,4 +1,4 @@
-import { View, Pressable, StyleSheet } from 'react-native';
+import { View, Pressable, StyleSheet, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { useGameStore } from '@/stores/gameStore';
 import { useSettingsStore } from '@/stores/settingsStore';
@@ -16,7 +16,7 @@ export function GameGrid() {
   const hapticsEnabled = useSettingsStore(s => s.hapticsEnabled);
 
   function handlePress(row: number, col: number) {
-    if (hapticsEnabled && grid[row][col]) {
+    if (hapticsEnabled && Platform.OS !== 'web' && grid[row][col]) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     selectCell(row, col);

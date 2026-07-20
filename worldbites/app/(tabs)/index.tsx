@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as Haptics from 'expo-haptics';
 import { useGameStore } from '@/stores/gameStore';
@@ -25,7 +25,7 @@ export default function GameScreen() {
   }, []);
 
   useEffect(() => {
-    if (lastUnlockedRecipe && hapticsEnabled) {
+    if (lastUnlockedRecipe && hapticsEnabled && Platform.OS !== 'web') {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     }
   }, [lastUnlockedRecipe]);
