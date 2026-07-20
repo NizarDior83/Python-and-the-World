@@ -1,5 +1,5 @@
 # WorldBites — Gemini Image Prompts
-# 3 generations: Logo · Character Reference · Expression Sheet
+# 8 generations: Logo · Bito Hero · Expression Sheet · Bito Happy · Bito Excited · Bito Curious · Splash Screen · Props Pack
 
 Run each prompt separately in Gemini. Copy only the text between the dashed lines.
 
@@ -72,8 +72,6 @@ Professional character model sheet / expression reference sheet. 3D clay render 
 
 **NEGATIVE PROMPT:**
 inconsistent character design between quadrants, different proportions per quadrant, different art styles per quadrant, directional shadows, dramatic lighting, dark background, gradient background, busy background, text overlays beyond the four approved labels, watermark, low resolution, blurred edges, depth of field, film grain, noise, extra characters, extra limbs, sharp edges, scary expressions, inconsistent color between quadrants, photorealistic rendering, flat 2D illustration, cel shading, digital artifacts, misaligned grid, unequal quadrant sizes.
-
----
 
 ---
 
