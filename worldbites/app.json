@@ -7,8 +7,11 @@
     "scheme": "worldbites",
     "userInterfaceStyle": "light",
     "backgroundColor": "#FFF3E0",
+    "icon": "./assets/icon.png",
     "splash": {
-      "backgroundColor": "#FFB627"
+      "image": "./assets/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#FDDFA5"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -17,7 +20,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFB627"
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.worldbites.app"
     },
