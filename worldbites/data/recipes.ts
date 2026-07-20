@@ -52,7 +52,7 @@ export const RECIPES: Record<string, Recipe> = {
     emoji: '🌯',
     region: 'mexico',
     description: 'A big warm tortilla stuffed with spiced beans and all the goods.',
-    funFact: 'Did you know? The word "burrito" means "little donkey" in Spanish — because the stuffed tortilla looks like a donkey's pack!',
+    funFact: 'Did you know? The word "burrito" means "little donkey" in Spanish — because the stuffed tortilla looks like a donkey\'s pack!',
     difficulty: 2,
     coinsReward: 90,
     xpReward: 60,

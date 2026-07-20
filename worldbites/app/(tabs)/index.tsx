@@ -1,7 +1,9 @@
 import { useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import * as Haptics from 'expo-haptics';
 import { useGameStore } from '@/stores/gameStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { HUD } from '@/components/game/HUD';
 import { GameGrid } from '@/components/game/GameGrid';
 import { Bito } from '@/components/bito/Bito';
@@ -14,12 +16,19 @@ export default function GameScreen() {
   const initRegion = useGameStore(s => s.initRegion);
   const activeRegion = useGameStore(s => s.activeRegion);
   const grid = useGameStore(s => s.grid);
+  const hapticsEnabled = useSettingsStore(s => s.hapticsEnabled);
 
   useEffect(() => {
     // Initialize grid on first mount if it's empty
     const isEmpty = grid.every(row => row.every(cell => cell === null));
     if (isEmpty) initRegion(activeRegion);
   }, []);
+
+  useEffect(() => {
+    if (lastUnlockedRecipe && hapticsEnabled) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    }
+  }, [lastUnlockedRecipe]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top']}>

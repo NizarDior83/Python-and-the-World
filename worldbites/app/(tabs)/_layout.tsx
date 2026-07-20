@@ -1,6 +1,7 @@
-import { Tabs } from 'expo-router';
+import { Tabs, Redirect } from 'expo-router';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors, Radius, Shadows, Typography } from '@/constants/theme';
+import { useSettingsStore } from '@/stores/settingsStore';
 
 function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focused: boolean }) {
   return (
@@ -14,6 +15,11 @@ function TabIcon({ emoji, label, focused }: { emoji: string; label: string; focu
 }
 
 export default function TabLayout() {
+  const hasOnboarded = useSettingsStore(s => s.hasOnboarded);
+
+  // First launch → send the player through the Bito intro
+  if (!hasOnboarded) return <Redirect href="/onboarding" />;
+
   return (
     <Tabs
       screenOptions={{

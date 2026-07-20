@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   INGREDIENTS,
   RECIPE_COMBINATIONS,
@@ -43,9 +45,12 @@ interface GameStore {
   unlockRegion: (regionId: string) => void;
   dismissRecipe: () => void;
   spawnIngredient: (ingredientId: string) => void;
+  resetProgress: () => void;
 }
 
-export const useGameStore = create<GameStore>((set, get) => ({
+export const useGameStore = create<GameStore>()(
+  persist(
+    (set, get) => ({
   grid: makeGrid(),
   coins: 300,
   xp: 0,
@@ -200,4 +205,33 @@ export const useGameStore = create<GameStore>((set, get) => ({
     newGrid[r][c] = { id: uid(), ingredientId: ingId };
     set({ grid: newGrid });
   },
-}));
+
+  resetProgress() {
+    set({
+      grid: makeGrid(),
+      coins: 300,
+      xp: 0,
+      activeRegion: 'japan',
+      unlockedRegions: ['japan'],
+      unlockedRecipes: [],
+      selectedCell: null,
+      lastUnlockedRecipe: null,
+      lastMergedCell: null,
+    });
+    get().initRegion('japan');
+  },
+    }),
+    {
+      name: 'worldbites-game',
+      storage: createJSONStorage(() => AsyncStorage),
+      // Persist progression only — the grid regenerates on load.
+      partialize: state => ({
+        coins: state.coins,
+        xp: state.xp,
+        activeRegion: state.activeRegion,
+        unlockedRegions: state.unlockedRegions,
+        unlockedRecipes: state.unlockedRecipes,
+      }),
+    },
+  ),
+);

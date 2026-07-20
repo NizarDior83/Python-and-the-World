@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
 import { useGameStore } from '@/stores/gameStore';
 import { REGIONS } from '@/data/regions';
 import { Colors, Radius, Shadows, Typography } from '@/constants/theme';
 
 export function HUD() {
+  const router = useRouter();
   const coins = useGameStore(s => s.coins);
   const xp = useGameStore(s => s.xp);
   const activeRegion = useGameStore(s => s.activeRegion);
@@ -24,6 +26,13 @@ export function HUD() {
           <Text style={styles.statEmoji}>⭐</Text>
           <Text style={styles.statValue}>{xp} XP</Text>
         </View>
+        <Pressable
+          style={styles.gear}
+          hitSlop={8}
+          onPress={() => router.push('/settings')}
+        >
+          <Text style={styles.gearIcon}>⚙️</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -76,5 +85,16 @@ const styles = StyleSheet.create({
     ...Typography.uiBold,
     fontSize: 14,
     color: Colors.soil,
+  },
+  gear: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.parchmentDeep,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  gearIcon: {
+    fontSize: 16,
   },
 });

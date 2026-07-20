@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,6 +11,8 @@ import {
 } from '@expo-google-fonts/nunito';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Colors } from '@/constants/theme';
+import { useSettingsStore } from '@/stores/settingsStore';
+import { useGameStore } from '@/stores/gameStore';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -21,17 +23,40 @@ export default function RootLayout() {
     Nunito_600SemiBold,
     Nunito_800ExtraBold,
   });
+  const settingsHydrated = useSettingsStore(s => s._hasHydrated);
+
+  // The game store persists progression; wait for it before mounting screens
+  // so the board initialises against the saved active region.
+  const [gameHydrated, setGameHydrated] = useState(() =>
+    useGameStore.persist.hasHydrated(),
+  );
+  useEffect(() => {
+    if (useGameStore.persist.hasHydrated()) setGameHydrated(true);
+    const unsub = useGameStore.persist.onFinishHydration(() =>
+      setGameHydrated(true),
+    );
+    return unsub;
+  }, []);
+
+  const ready = loaded && settingsHydrated && gameHydrated;
 
   useEffect(() => {
-    if (loaded) SplashScreen.hideAsync();
-  }, [loaded]);
+    if (ready) SplashScreen.hideAsync();
+  }, [ready]);
 
-  if (!loaded) return null;
+  if (!ready) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="dark" backgroundColor={Colors.parchment} />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="onboarding" options={{ animation: 'fade' }} />
+        <Stack.Screen
+          name="settings"
+          options={{ presentation: 'modal', animation: 'slide_from_bottom' }}
+        />
+      </Stack>
     </GestureHandlerRootView>
   );
 }

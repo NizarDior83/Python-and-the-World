@@ -1,5 +1,7 @@
 import { View, Pressable, StyleSheet } from 'react-native';
+import * as Haptics from 'expo-haptics';
 import { useGameStore } from '@/stores/gameStore';
+import { useSettingsStore } from '@/stores/settingsStore';
 import { GameTile } from './GameTile';
 import { Colors, Radius, Shadows } from '@/constants/theme';
 
@@ -11,6 +13,14 @@ export function GameGrid() {
   const grid = useGameStore(s => s.grid);
   const selectedCell = useGameStore(s => s.selectedCell);
   const selectCell = useGameStore(s => s.selectCell);
+  const hapticsEnabled = useSettingsStore(s => s.hapticsEnabled);
+
+  function handlePress(row: number, col: number) {
+    if (hapticsEnabled && grid[row][col]) {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    selectCell(row, col);
+  }
 
   return (
     <View style={styles.wrapper}>
@@ -25,7 +35,7 @@ export function GameGrid() {
                 <Pressable
                   key={col}
                   style={[styles.cell, isSelected && styles.cellSelected]}
-                  onPress={() => selectCell(row, col)}
+                  onPress={() => handlePress(row, col)}
                 >
                   {cell && (
                     <GameTile
