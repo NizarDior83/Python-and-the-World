@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Image, Pressable, StyleSheet, ImageSourcePropType } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -8,16 +8,25 @@ import Animated, {
   withTiming,
   withSequence,
 } from 'react-native-reanimated';
-import { useBito } from '@/hooks/useBito';
+import { useBito, BitoExpression } from '@/hooks/useBito';
 import { BitoBubble } from './BitoBubble';
-import { Colors } from '@/constants/theme';
 
-// Swap these for the real Bito images once generated
-const BITO_EMOJI: Record<string, string> = {
-  happy:   '😊',
-  excited: '🤩',
-  curious: '🤔',
-  waving:  '👋',
+// Real Bito clay-render assets (transparent PNGs)
+const BITO_IMAGES: Record<BitoExpression, ImageSourcePropType> = {
+  happy:   require('@/assets/bito/bito-happy.png'),
+  excited: require('@/assets/bito/bito-excited.png'),
+  curious: require('@/assets/bito/bito-curious.png'),
+  // No dedicated waving asset yet — fall back to the happy pose
+  waving:  require('@/assets/bito/bito-happy.png'),
+};
+
+// Per-expression render size — keeps Bito's body roughly consistent even
+// though the excited/curious frames include extra confetti / a thought bubble.
+const BITO_SIZE: Record<BitoExpression, { width: number; height: number }> = {
+  happy:   { width: 132, height: 165 },
+  excited: { width: 158, height: 198 },
+  curious: { width: 150, height: 188 },
+  waving:  { width: 132, height: 165 },
 };
 
 export function Bito() {
@@ -57,15 +66,18 @@ export function Bito() {
     ],
   }));
 
+  const size = BITO_SIZE[expression];
+
   return (
     <View style={styles.zone}>
       {dialogue && <BitoBubble text={dialogue} />}
-      <Pressable onPress={handleTap} style={styles.pressable}>
+      <Pressable onPress={handleTap} style={styles.pressable} hitSlop={12}>
         <Animated.View style={animStyle}>
-          {/* Replace View+Text below with <Image> when bito-{expression}.png is ready */}
-          <View style={styles.bitoBody}>
-            <Text style={styles.bitoEmoji}>{BITO_EMOJI[expression]}</Text>
-          </View>
+          <Image
+            source={BITO_IMAGES[expression]}
+            style={{ width: size.width, height: size.height }}
+            resizeMode="contain"
+          />
         </Animated.View>
       </Pressable>
     </View>
@@ -77,26 +89,10 @@ const styles = StyleSheet.create({
     height: 200,
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    paddingRight: 12,
-    paddingBottom: 4,
+    paddingRight: 16,
+    paddingBottom: 2,
   },
   pressable: {
     alignItems: 'center',
-  },
-  bitoBody: {
-    width: 110,
-    height: 126,
-    borderRadius: 55,
-    backgroundColor: Colors.sunshine,
-    alignItems: 'center',
-    justifyContent: 'center',
-    shadowColor: Colors.clay,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
-    elevation: 8,
-  },
-  bitoEmoji: {
-    fontSize: 58,
   },
 });
